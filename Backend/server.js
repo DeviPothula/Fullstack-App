@@ -18,6 +18,12 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: 5432,
 });
+
+console.log("DB_URL IN SERVER JS FILE:", process.env.DB_URL);
+console.log("DB_USER IN SERVER JS FILE :", process.env.DB_USER);
+console.log("DB_PASSWORD SERVER JS FILE:", process.env.DB_PASSWORD);
+console.log("DB_NAME SERVER JS FILE:", process.env.DB_NAME);
+
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize(
   process.env.DB_URL,

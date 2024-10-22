@@ -19,6 +19,7 @@ const pool = new Pool({
   port: 5432,
 });
 
+console.log('NODE_ENV ,,,', process.env.NODE_ENV)
 console.log("DB_URL IN SERVER JS FILE:", process.env.DB_URL);
 console.log("DB_USER IN SERVER JS FILE :", process.env.DB_USER);
 console.log("DB_PASSWORD SERVER JS FILE:", process.env.DB_PASSWORD);

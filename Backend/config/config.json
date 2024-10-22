@@ -14,9 +14,9 @@
       "dialect": "postgres"
     },
     "production": {
-      "username": "root",
-      "password": null,
-      "database": "database_production",
+      "username": "my_app_role",
+      "password": "some_password",
+      "database": "my_app",
       "host": "127.0.0.1",
       "dialect": "postgres"
     }

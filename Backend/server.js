@@ -2,7 +2,9 @@
 const express = require("express");
 const { Pool } = require("pg");
 const cors = require("cors");
-require("dotenv").config();
+require("dotenv").config({
+  path: process.env.NODE_ENV === "production" ? ".env.production" : ".env"
+});
  // Ensure 'User' is destructured from 'models'
 
 const app = express();
@@ -18,7 +20,7 @@ const pool = new Pool({
 });
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize(
-  "postgres://postgres:devi@localhost:5432/myTest",
+  process.env.DB_URL,
   { logging: false }
 );
 

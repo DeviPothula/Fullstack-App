@@ -1,0 +1,87 @@
+// server.js
+const express = require("express");
+const { Pool } = require("pg");
+const cors = require("cors");
+require("dotenv").config();
+ // Ensure 'User' is destructured from 'models'
+
+const app = express();
+const port = process.env.PORT || 5000;
+
+// PostgreSQL connection pool
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: "localhost",
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: 5432,
+});
+const { Sequelize, DataTypes } = require("sequelize");
+const sequelize = new Sequelize(
+  "postgres://postgres:devi@localhost:5432/myTest",
+  { logging: false }
+);
+
+// Import models
+const User = require("./models/user")(sequelize, DataTypes);
+
+// Sync models
+sequelize
+  .sync()
+  .then(() => console.log("Database synced"))
+  .catch((err) => console.log("Error syncing database:", err));
+
+module.exports = { sequelize, User };
+
+app.use(cors());
+app.use(express.json());
+
+// Test database connection
+app.get("/api/test", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ time: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch all users
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.findAll();
+    console.log('USERS>>>', users)
+    res.json(users); // Return the users as a JSON response
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// POST API to insert a user
+app.post("/api/users", async (req, res) => {
+  const { name } = req.body;
+
+  // Validate the input (basic validation for name)
+  if (!name) {
+    return res.status(400).json({ error: "Name is required" });
+  }
+
+  try {
+    // Insert user into the database
+    const newUser = await User.create({
+      name: name
+    });
+
+    // Return the created user as a response
+    res.status(201).json(newUser); // Status 201 means created
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
